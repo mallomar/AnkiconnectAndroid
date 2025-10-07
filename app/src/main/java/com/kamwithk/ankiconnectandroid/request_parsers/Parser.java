@@ -21,9 +21,14 @@ public class Parser {
     public static Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
     public static Gson gsonNoSerialize = new GsonBuilder().setPrettyPrinting().create();
 
-    public static JsonObject parse(String raw_data) {
-        return JsonParser.parseString(raw_data).getAsJsonObject();
-    }
+public static JsonObject parse(String raw_data) {
+    // Use a more lenient parser that accepts both numeric and string version fields
+    com.google.gson.stream.JsonReader reader = new com.google.gson.stream.JsonReader(
+        new java.io.StringReader(raw_data)
+    );
+    reader.setLenient(true);
+    return JsonParser.parseReader(reader).getAsJsonObject();
+}
 
     public static String get_action(JsonObject data) {
         return data.get("action").getAsString();
